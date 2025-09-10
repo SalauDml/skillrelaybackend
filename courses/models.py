@@ -1,5 +1,5 @@
 from django.db import models
-from ..accounts.models import AppUser
+from accounts.models import AppUser
 # Create your models here.
 
 difficulty_choices = (('beginner','Beginner'),('intermediate','Intermediate'),('advanced','Advanced'))
