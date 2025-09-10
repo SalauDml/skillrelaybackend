@@ -1,7 +1,9 @@
 from django.db import models
+from ..accounts.models import AppUser
 # Create your models here.
 
 difficulty_choices = (('beginner','Beginner'),('intermediate','Intermediate'),('advanced','Advanced'))
+
 
 class Course(models.Model):
     title = models.CharField(max_length=100,blank=False,null=False)
@@ -47,6 +49,13 @@ class ExamChoice(models.Model):
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
 
+class UserCourseProgress(models.Model):
+    user = models.ForeignKey(AppUser,on_delete=models.CASCADE,related_name="course_progress")
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    current_module = models.ForeignKey(Module,on_delete=models.SET_NULL, null= True)
+    current_lesson = models.ForeignKey(Lesson,on_delete=models.SET_NULL, null = True)
+
+    
 
 
 

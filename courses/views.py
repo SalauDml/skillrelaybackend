@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import permissions
-from .serializers import CourseListSerializer,CourseSerializer,QuizSerializer,ModuleListSerializer
+from .serializers import CourseListSerializer,CourseSerializer,QuizSerializer,ModuleListSerializer,UserProgressSerializer,UserCourseProgress
 from .serializers import LessonSerializer,ExamSerializer
 from django.contrib.auth.models import User 
 from rest_framework.views import APIView
@@ -201,3 +201,28 @@ class ExamEndpoint(APIView):
         exam = getattr(course, 'exam', None)
         serializer = ExamSerializer(exam)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ProgressEndpoint(APIView):
+    def post(self,request):
+        serializer = UserProgressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response("Accepted Request",status=status.HTTP_201_CREATED)
+        return Response(f"{serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self,request,id):
+        object = UserCourseProgress.objects.filter(id = id)
+        serializer = UserProgressSerializer(object, request.data, partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response ("Updated Succesfully", status=status.HTTP_202_ACCEPTED)
+        return Response(f"{serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try: 
+            object = UserCourseProgress.objects.filter(id = id)
+        except UserCourseProgress.DoesNotExist:
+            return Response("Object does not exist", status=status.HTTP_404_NOT_FOUND)
+        object.delete()
+        return Response()
+

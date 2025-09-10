@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Module, Lesson, Quiz, Questions, Options, Exam, ExamQuestion, ExamChoice
+from .models import Course, Module, Lesson, Quiz, Questions, Options, Exam, ExamQuestion, ExamChoice,UserCourseProgress
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -71,3 +71,20 @@ class ModuleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = '__all__'
+
+class UserProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCourseProgress
+        fields = ['id','course','current_module','current_lesson']
+        read_only_fields = ['id']
+    
+    def create(self, validated_data):
+        object = UserCourseProgress.objects.create(
+            user = self.context.get("user"), 
+            course = validated_data['course'], 
+            current_module = validated_data['current_module'], 
+            current_lesson = validated_data['current_lesson']  )
+        return object
+    
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)

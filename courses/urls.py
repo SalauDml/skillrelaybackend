@@ -6,6 +6,7 @@ from .views import (
     ModuleListEndpoint,
     LessonsEndpoint,
     ExamEndpoint,
+    ProgressEndpoint,
 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path('modules/<int:id>/quiz/', SpecificQuizEndpoint.as_view(), name='module-quiz'),
     path('modules/<int:id>/lessons/', LessonsEndpoint.as_view(), name='module-lessons'),
     path('courses/<int:id>/exam/', ExamEndpoint.as_view(), name='course-exam'),
+    path('courses/<int:id>/progress/',ProgressEndpoint.as_view())
 
 ]
 
