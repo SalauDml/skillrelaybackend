@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
 
+
 class UserManager(BaseUserManager):
     def create_user(self,email, password,full_name, phone_number,**kwargs):
         if not email:
@@ -12,7 +13,9 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using = self.db)
 
-    def create_superuser(self, email, full_name, phone_number, password=None, **extra_fields):
+        return user
+
+    def create_superuser(self, email, full_name, phone_number, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -22,7 +25,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, full_name, phone_number, password, **extra_fields)
+        return self.create_user(email, password,full_name,phone_number, **extra_fields)
 
 
 
@@ -41,7 +44,8 @@ class AppUser(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.email()
+        status = "Active" if self.is_active else "Inactive"
+        return f"{self.email} - {status}"
 
 class CertificationList(models.Model):
     user = models.ForeignKey(AppUser,related_name='files',on_delete=models.CASCADE)
