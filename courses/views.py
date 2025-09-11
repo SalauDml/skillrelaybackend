@@ -12,10 +12,19 @@ from .models import Course,Module
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+token_param = openapi.Parameter(
+    'Authorization',
+    openapi.IN_HEADER,
+    description="Bearer <JWT token>",
+    type=openapi.TYPE_STRING,
+    required=False
+)
+
 # Create your views here.
 class CourseListEndpoint (APIView):
     @swagger_auto_schema(
         operation_description="Get a list of all courses.",
+        manual_parameters=[token_param],
         responses={
             200: openapi.Response(
                 description="List of courses",
@@ -44,6 +53,7 @@ class SpecificCourseEndpoint(APIView):
     @swagger_auto_schema(
         operation_description="Get details of a specific course.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('id', openapi.IN_PATH, description="Course ID", type=openapi.TYPE_INTEGER)
         ],
         responses={
@@ -73,6 +83,7 @@ class SpecificCourseEndpoint(APIView):
 class ModuleListEndpoint(APIView):
     @swagger_auto_schema(
         operation_description="Get a list of all modules.",
+        manual_parameters=[token_param],
         responses={
             200: openapi.Response(
                 description="List of modules",
@@ -100,6 +111,7 @@ class SpecificQuizEndpoint(APIView):
     @swagger_auto_schema(
         operation_description="Get the quiz for a specific module.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('id', openapi.IN_PATH, description="Module ID", type=openapi.TYPE_INTEGER)
         ],
         responses={
@@ -136,6 +148,7 @@ class LessonsEndpoint(APIView):
     @swagger_auto_schema(
         operation_description="Get all lessons for a specific module.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('id', openapi.IN_PATH, description="Module ID", type=openapi.TYPE_INTEGER)
         ],
         responses={
@@ -168,6 +181,7 @@ class ExamEndpoint(APIView):
     @swagger_auto_schema(
         operation_description="Get the exam for a specific course.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('id', openapi.IN_PATH, description="Course ID", type=openapi.TYPE_INTEGER)
         ],
         responses={
@@ -203,6 +217,16 @@ class ExamEndpoint(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ProgressEndpoint(APIView):
+    @swagger_auto_schema(
+        operation_description="Create user progress. Requires Bearer token.",
+        manual_parameters=[token_param],
+        request_body=UserProgressSerializer,
+        responses={
+            201: openapi.Response('Accepted', examples={"application/json": "Accepted Request"}),
+            400: openapi.Response('Validation error', examples={"application/json": {"error": "Validation failed"}})
+        },
+        tags=["Progress"]
+    )
     def post(self,request):
         serializer = UserProgressSerializer(data=request.data)
         if serializer.is_valid():
@@ -210,6 +234,19 @@ class ProgressEndpoint(APIView):
             return Response("Accepted Request",status=status.HTTP_201_CREATED)
         return Response(f"{serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
     
+    @swagger_auto_schema(
+        operation_description="Update user progress. Requires Bearer token.",
+        manual_parameters=[
+            token_param,
+            openapi.Parameter('id', openapi.IN_PATH, description="Progress ID", type=openapi.TYPE_INTEGER)
+        ],
+        request_body=UserProgressSerializer,
+        responses={
+            202: openapi.Response('Updated', examples={"application/json": "Updated Successfully"}),
+            400: openapi.Response('Validation error', examples={"application/json": {"error": "Validation failed"}})
+        },
+        tags=["Progress"]
+    )
     def patch(self,request,id):
         object = UserCourseProgress.objects.filter(id = id)
         serializer = UserProgressSerializer(object, request.data, partial = True)
@@ -218,11 +255,23 @@ class ProgressEndpoint(APIView):
             return Response ("Updated Succesfully", status=status.HTTP_202_ACCEPTED)
         return Response(f"{serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
     
+    @swagger_auto_schema(
+        operation_description="Delete user progress. Requires Bearer token.",
+        manual_parameters=[
+            token_param,
+            openapi.Parameter('id', openapi.IN_PATH, description="Progress ID", type=openapi.TYPE_INTEGER)
+        ],
+        responses={
+            204: openapi.Response('Deleted', examples={"application/json": "Deleted Successfully"}),
+            404: openapi.Response('Not found', examples={"application/json": "Object does not exist"})
+        },
+        tags=["Progress"]
+    )
     def delete(self, request, id):
         try: 
             object = UserCourseProgress.objects.filter(id = id)
         except UserCourseProgress.DoesNotExist:
             return Response("Object does not exist", status=status.HTTP_404_NOT_FOUND)
         object.delete()
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -14,6 +14,14 @@ from rest_framework import parsers
 
 # Create your views here.
 
+token_param = openapi.Parameter(
+    'Authorization',
+    openapi.IN_HEADER,
+    description="Bearer <JWT token>",
+    type=openapi.TYPE_STRING,
+    required=False
+)
+
 class UserRegistrationView(APIView):
     permission_classes = [permissions.AllowAny]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
@@ -83,8 +91,9 @@ class UserProfile(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     @swagger_auto_schema(
-        operation_description="Update user profile (partial update).",
+        operation_description="Update user profile (partial update). Requires Bearer token.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('full_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=False),
             openapi.Parameter('phone_number', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Phone number', required=False),
             openapi.Parameter('location', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Location', required=False),
@@ -110,7 +119,8 @@ class CertificationList(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     @swagger_auto_schema(
-        operation_description="Get all certifications for the authenticated user.",
+        operation_description="Get all certifications for the authenticated user. Requires Bearer token.",
+        manual_parameters=[token_param],
         responses={
             200: openapi.Response(
                 'List of certifications',
@@ -128,8 +138,9 @@ class CertificationList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        operation_description="Upload a new certification file.",
+        operation_description="Upload a new certification file. Requires Bearer token.",
         manual_parameters=[
+            token_param,
             openapi.Parameter('file', openapi.IN_FORM, type=openapi.TYPE_FILE, description='Certification file', required=True)
         ],
         consumes=['multipart/form-data'],
