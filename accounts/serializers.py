@@ -1,10 +1,26 @@
 from rest_framework import serializers
 from .models import AppUser,CertificationList
+import re
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = '__all__'
+
+    def validate(self, attrs):
+
+        password = attrs.get('password')
+        if not re.search(r"[a-z]",password): 
+            self.errors["lower_case_error"] = "Must contain at least one lowercase letter "
+        if not re.search(r"[A-Z]",password):
+            self.errors["upper_case_errors"] = "Must contain at least one uppercase letter"
+        if not re.search[r"[0-9]",password]:
+            self.errors["number_error"] = "Must contain at least one digit"
+        if not re.search[r"@$!%*?&#",password]:
+            self.errors["special_character"] = "Must contain one special character"
+            return self.errors
+
+        return super().validate(attrs)
 
     def create(self, validated_data):
         user = AppUser.objects.create_user(
