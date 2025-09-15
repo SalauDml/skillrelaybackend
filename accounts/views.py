@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import permissions
-from .serializers import UserSerializer, CertificationSerializer
+from .serializers import UserSerializer, CertificationSerializer,CustomTokenObtainPairSerializer
 from django.contrib.auth.models import User 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,6 +11,7 @@ from .models import CertificationList, AppUser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework import parsers
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your views here.
 
@@ -21,6 +22,24 @@ token_param = openapi.Parameter(
     type=openapi.TYPE_STRING,
     required=False
 )
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = CustomTokenObtainPairSerializer
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "email": openapi.Schema(type=openapi.TYPE_STRING, description="User email"),
+                "password": openapi.Schema(type=openapi.TYPE_STRING, description="User password"),
+            },
+            required=["email", "password"],
+        )
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+    
 
 class UserRegistrationView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -49,7 +68,8 @@ class UserRegistrationView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'success': "user created successfully "}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class UserLoginView(APIView):
@@ -89,6 +109,16 @@ class UserLoginView(APIView):
 
 class UserProfile(APIView):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+
+    @swagger_auto_schema(
+            manual_parameters= [token_param]
+    )
+
+    def get(self,request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+            
 
     @swagger_auto_schema(
         operation_description="Update user profile (partial update). Requires Bearer token.",

@@ -18,11 +18,16 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import UserLoginView,UserRegistrationView,UserProfile,CertificationList
+from .views import UserLoginView,UserRegistrationView,UserProfile,CertificationList,CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
 urlpatterns = [
     path('register/',UserRegistrationView.as_view()),
-    path('login/',UserLoginView.as_view()),
-    path('profile/',UserProfile.as_view()),
+    path('login/',CustomTokenObtainPairView.as_view()),
+    path('tokenrefresh',TokenRefreshView.as_view()),
+    path('profile',UserProfile.as_view()),
+    # path('profileupdate/',UserProfile.as_view()),
     path('certification/',CertificationList.as_view()),
     path('certification/<int:id>/',CertificationList.as_view())
 ]

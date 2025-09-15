@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import AppUser,CertificationList
 import re
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from datetime import datetime
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,18 +12,21 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
 
+        errors = {}
+
         password = attrs.get('password')
         if not re.search(r"[a-z]",password): 
-            self.errors["lower_case_error"] = "Must contain at least one lowercase letter "
+            errors["lower_case_error"] = "Must contain at least one lowercase letter "
         if not re.search(r"[A-Z]",password):
-            self.errors["upper_case_errors"] = "Must contain at least one uppercase letter"
-        if not re.search[r"[0-9]",password]:
-            self.errors["number_error"] = "Must contain at least one digit"
-        if not re.search[r"@$!%*?&#",password]:
-            self.errors["special_character"] = "Must contain one special character"
-            return self.errors
+            errors["upper_case_errors"] = "Must contain at least one uppercase letter"
+        if not re.search(r"[0-9]",password):
+            errors["number_error"] = "Must contain at least one digit"
+        if not re.search(r"[@$!%*?&#]",password):
+            errors["special_character"] = "Must contain one special character"
+        if errors:
+            raise serializers.ValidationError(errors)
 
-        return super().validate(attrs)
+        return attrs
 
     def create(self, validated_data):
         user = AppUser.objects.create_user(
@@ -47,3 +53,17 @@ class CertificationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return CertificationList.objects.create(**validated_data)
+    
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        access_token = refresh.access_token
+
+        # Add extra token meta info
+        data['expires_at'] = datetime.fromtimestamp(access_token['exp'])
+        data['issued_at'] = datetime.fromtimestamp(access_token['iat'])
+        data['lifetime_seconds'] = access_token['exp'] - access_token['iat']
+        data['token_type'] = access_token['token_type']
+
+        return data 
