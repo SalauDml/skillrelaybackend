@@ -50,9 +50,13 @@ class CertificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CertificationList
         fields = '__all__'
+        read_only_fields = ['user']
 
     def create(self, validated_data):
-        return CertificationList.objects.create(**validated_data)
+        return CertificationList.objects.create(
+            user = self.context["request"].user,
+            file = validated_data["file"]
+        )
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):

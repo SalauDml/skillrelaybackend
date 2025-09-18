@@ -35,9 +35,7 @@ class AppUser(AbstractUser):
     email= models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20,blank=False)
     location = models.CharField(max_length=100,blank=False)
-    tutor = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/',blank=False)
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'phone_number']
     

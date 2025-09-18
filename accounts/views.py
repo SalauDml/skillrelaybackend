@@ -181,7 +181,7 @@ class CertificationList(APIView):
         tags=["Certification"]
     )
     def post(self, request):
-        serializer = CertificationSerializer(data=request.data)
+        serializer = CertificationSerializer(data=request.data,context = {"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response("Created Successfully", status=status.HTTP_200_OK)
