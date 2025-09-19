@@ -2,7 +2,7 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class UserManager(BaseUserManager):
     def create_user(self,email, password,full_name, phone_number,**kwargs):
@@ -31,13 +31,15 @@ class UserManager(BaseUserManager):
 
 class AppUser(AbstractUser):
     username = None
-    full_name = models.CharField(max_length=150, blank=False)
+    first_name = models.CharField(max_length=150, null= False,blank=False)
+    last_name = models.CharField(max_length=150, null=False,blank=False)
+    middle_name = models.CharField(max_length=150, null=True, blank= True)
     email= models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=20,blank=False)
+    phone = PhoneNumberField(blank= True, null= True)
     location = models.CharField(max_length=100,blank=False)
     profile_picture = models.ImageField(upload_to='profile_pics/',blank=False)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name', 'phone_number']
+    REQUIRED_FIELDS = ['last_name','first_name','phone']
     
     objects = UserManager()
 
