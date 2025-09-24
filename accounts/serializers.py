@@ -31,7 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = AppUser.objects.create_user(
             email=validated_data['email'],
-            full_name=validated_data['full_name'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
             phone_number=validated_data['phone_number'],
             password=validated_data['password'],  # It hashes internally,
             profile_picture = validated_data['profile_picture']

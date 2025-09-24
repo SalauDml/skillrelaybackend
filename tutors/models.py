@@ -7,7 +7,7 @@ class Tutor (models.Model):
     bio = models.TextField()
 
     def __str__(self):
-        return self.user.full_name
+        return f"{self.user.first_name + self.user.last_name}" 
 
 class CoursesHosted(models.Model):
     tutor = models.ForeignKey(Tutor,related_name="hosted_courses",on_delete=models.CASCADE)

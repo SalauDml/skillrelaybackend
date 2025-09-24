@@ -22,6 +22,9 @@ class TutorSerializer (ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        active_user = self.context["request"].user
+        active_user.is_staff = True
+        active_user.save()
         return Tutor.objects.create(
             user = self.context["request"].user,
             bio = validated_data["bio"]

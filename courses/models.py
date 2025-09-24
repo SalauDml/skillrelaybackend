@@ -4,12 +4,18 @@ from accounts.models import AppUser
 
 difficulty_choices = (('beginner','Beginner'),('intermediate','Intermediate'),('advanced','Advanced'))
 
+class CourseCategory(models.Model):
+    title = models.CharField(max_length=100,blank=False,null=False)
+
+    def __str__(self):
+        return self.title
 
 class Course(models.Model):
     title = models.CharField(max_length=100,blank=False,null=False)
     description = models.TextField(max_length=35,blank=False,null=False)
     difficulty = models.CharField(max_length=20, choices=difficulty_choices)
     learners = models.IntegerField(default=0)
+    category = models.ForeignKey(CourseCategory,related_name="courses",blank=True,on_delete=models.PROTECT,null=True)
 
     def __str__(self):
         return self.title
@@ -34,8 +40,8 @@ class Lesson(models.Model):
 class Quiz(models.Model):
     module = models.OneToOneField(Module,related_name="quiz",on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"Quiz for {self.module.title}"
+    # def __str__(self):
+    #     return f"Quiz for {self.module.title}"
 
 class Questions(models.Model):
     text = models.TextField()
@@ -84,7 +90,10 @@ class UserCourseProgress(models.Model):
     def __str__(self):
         return f"{self.user.full_name} - {self.course.title}"
 
+class CompletedCourse(models.Model):
+    user = models.ForeignKey(AppUser,on_delete=models.CASCADE,related_name="completed_courses")
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
 
-
+    
 
 

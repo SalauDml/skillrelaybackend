@@ -76,9 +76,13 @@ class SpecificCourseEndpoint(APIView):
         tags=["Courses"]
     )
     def get(self,request,id):
-        course = Course.objects.filter(id=id).first()
-        serializer = CourseSerializer(course)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        try:
+            course = Course.objects.get(id = id)
+            serializer = CourseSerializer(course)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except Course.DoesNotExist:
+            return Response("Course with that Id does not exist", status=status.HTTP_400_BAD_REQUEST)
+       
 
 class ModuleListEndpoint(APIView):
     @swagger_auto_schema(
@@ -228,7 +232,7 @@ class ProgressEndpoint(APIView):
         tags=["Progress"]
     )
     def post(self,request):
-        serializer = UserProgressSerializer(data=request.data)
+        serializer = UserProgressSerializer(data=request.data,context= {"request":request.user})
         if serializer.is_valid():
             serializer.save()
             return Response("Accepted Request",status=status.HTTP_201_CREATED)

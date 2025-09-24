@@ -29,7 +29,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
-    quiz = QuizSerializer(many = True, read_only = True)
+    quiz = QuizSerializer(read_only = True)
 
     class Meta:
         model = Module
@@ -56,7 +56,6 @@ class ExamSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     modules = ModuleSerializer(many=True, read_only=True)
-    exam = ExamSerializer(read_only=True)
 
     class Meta:
         model = Course
