@@ -62,14 +62,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'phonenumber_field'
+    'phonenumber_field',
+    'corsheaders'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    '*'
-]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -78,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.common.CommonMiddleware",
+
 ]
 
 ROOT_URLCONF = 'skillrelay.urls'
