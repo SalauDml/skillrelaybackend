@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            phone_number=validated_data['phone_number'],
+            phone=validated_data['phone'],
             password=validated_data['password'],  # It hashes internally,
             profile_picture = validated_data['profile_picture']
         )
@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('full_name',instance.first_name)
         instance.last_name = validated_data.get('full_name',instance.last_name)
         instance.middle_name = validated_data.get('full_name',instance.middle_name)
-        instance.phone = validated_data.get('phone_number',instance.phone)
+        instance.phone = validated_data.get('phone',instance.phone)
         instance.password = validated_data.get('password',instance.password)
         instance.profile_picture = validated_data.get('password',instance.profile_picture)
         return instance
