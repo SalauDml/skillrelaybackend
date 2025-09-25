@@ -50,7 +50,6 @@ class UserRegistrationView(APIView):
         manual_parameters=[
             openapi.Parameter('email', openapi.IN_FORM, type=openapi.TYPE_STRING, description='User email', required=True),
             openapi.Parameter('password', openapi.IN_FORM, type=openapi.TYPE_STRING, description='User password', required=True),
-            openapi.Parameter('full_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=True),
             openapi.Parameter('first_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=True),
             openapi.Parameter('last_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=True),
             openapi.Parameter('middle_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=False),

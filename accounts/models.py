@@ -5,11 +5,11 @@ from django.contrib.auth.models import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 
 class UserManager(BaseUserManager):
-    def create_user(self,email, password,full_name, phone_number,**kwargs):
+    def create_user(self,email, password,first_name,last_name,phone,**kwargs):
         if not email:
             raise ValueError("The email field is required")
         email = self.normalize_email(email)
-        user = self.model(email=email,phone_number= phone_number, full_name = full_name,**kwargs)
+        user = self.model(email=email,phone= phone, first_name = first_name, last_name = last_name,**kwargs)
         user.set_password(password)
         user.save(using = self.db)
 
