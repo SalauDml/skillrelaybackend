@@ -1,2 +1,6 @@
 superuser.txt
 accounts/management/
+.env
+db.sqlite3
+data.json
+

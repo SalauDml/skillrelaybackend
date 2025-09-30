@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email, full_name, phone_number, password, **extra_fields):
+    def create_superuser(self, email, first_name, last_name, phone, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -24,8 +24,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-
-        return self.create_user(email, password,full_name,phone_number, **extra_fields)
+        return self.create_user(email,first_name,last_name,phone, password, **extra_fields)
 
 
 
@@ -53,5 +52,5 @@ class CertificationList(models.Model):
     file = models.FileField(upload_to='certificationfiles/')
 
     def __str__(self):
-        return super().__str__()
+        return self.file.name
     

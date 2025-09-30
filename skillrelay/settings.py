@@ -13,11 +13,13 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -113,9 +115,9 @@ default_sqlite = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", default_sqlite),
+        default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True  # keep; if connection fails, try removing or adjust
+        ssl_require=True,  # important for Render
     )
 }
 
