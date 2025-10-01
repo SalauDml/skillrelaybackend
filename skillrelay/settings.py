@@ -71,11 +71,7 @@ INSTALLED_APPS = [
     'cloudinary_storage'
 ]
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dbipkpffy',
-    'API_KEY': '423258488477795',
-    'API_SECRET': '8W4b8bi6x0hvgtwkaBrz5PlV81w',
-}
+
 
 # This makes all media files go to Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
