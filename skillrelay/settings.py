@@ -67,7 +67,18 @@ INSTALLED_APPS = [
     'drf_yasg',
     'phonenumber_field',
     'corsheaders'
+    'cloudinary',
+    'cloudinary_storage'
 ]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dbipkpffy',
+    'API_KEY': '423258488477795',
+    'API_SECRET': '8W4b8bi6x0hvgtwkaBrz5PlV81w',
+}
+
+# This makes all media files go to Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
