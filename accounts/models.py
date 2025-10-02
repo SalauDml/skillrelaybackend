@@ -3,6 +3,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
+import os
+from dotenv import load_dotenv
+from cloudinary.models import CloudinaryField
+
 
 class UserManager(BaseUserManager):
     def create_user(self,email, password,first_name,last_name,phone,**kwargs):
@@ -36,7 +40,7 @@ class AppUser(AbstractUser):
     email= models.EmailField(unique=True)
     phone = PhoneNumberField(blank= True, null= True)
     location = models.CharField(max_length=100,blank=False)
-    profile_picture = models.ImageField(upload_to='profile_pics/',blank=False)
+    profile_picture = CloudinaryField(blank = True, null = True, type="upload", resource_type = "image")
     is_tutor = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['last_name','first_name','phone']
