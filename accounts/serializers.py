@@ -35,7 +35,6 @@ class UserSerializer(serializers.ModelSerializer):
             last_name=validated_data['last_name'],
             phone=validated_data['phone'],
             password=validated_data['password'],  # It hashes internally,
-            profile_picture = validated_data['profile_picture']
         )
         return user
     
