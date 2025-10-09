@@ -55,7 +55,7 @@ class UserRegistrationView(APIView):
             openapi.Parameter('middle_name', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Full name', required=False),
             openapi.Parameter('phone', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Phone number', required=True),
             openapi.Parameter('location', openapi.IN_FORM, type=openapi.TYPE_STRING, description='Location', required=True),
-            openapi.Parameter('profile_picture', openapi.IN_FORM, type=openapi.TYPE_FILE, description='Profile picture file', required=True),
+            openapi.Parameter('profile_picture', openapi.IN_FORM, type=openapi.TYPE_FILE, description='Profile picture file', required=False),
             openapi.Parameter('tutor', openapi.IN_FORM, type=openapi.TYPE_BOOLEAN, description='Is tutor (optional)', required=False),
         ],
         consumes=['multipart/form-data'],
